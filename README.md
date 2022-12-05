@@ -20,7 +20,7 @@ Malimg dataset can be downloaded through this link: old.vision.ece.ucsb.edu/spam
 
 Details about the Malimg dataset (original paper) can be found here: https://dl.acm.org/doi/10.1145/2016904.2016908
 
-The Malimg subset (8 classes) used in the proposed model can be extracted from the complete
+The Malimg subset (8 classes) used in the proposed model can be extracted from the complete dataset.
 
 ## Proposed Multi-Layer Perceptron Model
 
