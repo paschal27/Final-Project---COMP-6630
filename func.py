@@ -24,7 +24,7 @@ class LossFunc(object):
     def loss(self, y_true, y_pred): #Implemented into CrossEntropy
         return NotImplementedError()
 
-    def gradient(self, y, y_pred): #gradient - how fast and well is model learning
+    def gradient(self, y, y_pred): #gradient - how fast and well is the model learning
         raise NotImplementedError() 
 
     def acc(self, y, y_pred): #accuracy
