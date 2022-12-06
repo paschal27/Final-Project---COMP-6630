@@ -106,9 +106,7 @@ def main():
     print(f"Shape of val labels is {y_val.shape}")
 
     # Classfier - MLP
-    clf = MLP(hidden_layer=256,
-        iterations=300,
-        learningRate=0.00001)
+    clf = MLP(hidden_layer=256, iterations=300, learningRate=0.00001)
 
     start = time.time()
 
