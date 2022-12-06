@@ -17,24 +17,27 @@ import time
 class MLP():
 
     def __init__(self, hidden_layer, iterations=300, learningRate=0.00001): 
-        self.hidden_layer = hidden_layer
-        self.iterations = iterations
         self.learningRate = learningRate
+        self.iterations = iterations
+        self.hidden_layer = hidden_layer
 
-        self.activation_func = ReLU()
+        # Set function for model implementation
         self.output_activation = SoftmaxFunc()
+        self.activation_func = ReLU()
         self.loss_func = CrossEntropyFunc()
 
     def _initialize_weights(self, X, y): # Set Weights
         _, data_features = X.shape
-        s, output_val = y.shape
+        _, output_val = y.shape
        
         max_val   = 1 / math.sqrt(data_features)  # Hidden layer
-        self.W  = np.random.uniform(-max_val, max_val, (data_features, self.hidden_layer))
+        self.W  = np.random.uniform(-max_val, max_val, (data_features, 
+                                                self.hidden_layer))
         self.w0 = np.zeros((1, self.hidden_layer))
         
         max_val   = 1 / math.sqrt(self.hidden_layer) # Output layer
-        self.V  = np.random.uniform(-max_val, max_val, (self.hidden_layer, output_val))
+        self.V  = np.random.uniform(-max_val, max_val, (self.hidden_layer,
+                                                             output_val))
         self.v0 = np.zeros((1, output_val))
 
     def fit(self, X, y):
@@ -46,38 +49,38 @@ class MLP():
             output_val = self.activation_func(input_val)
 
             # Layer - Output
-            output_layer_input = output_val.dot(self.V) + self.v0
-            y_pred_val = self.output_activation(output_layer_input)
+            res_output = output_val.dot(self.V) + self.v0
+            y_pred_val = self.output_activation(res_output)
 
-            gradient_wrt_out_l_input = self.loss_func.gradient(y, y_pred_val) * self.output_activation.gradient(output_layer_input)
-            gradient_v = output_val.T.dot(gradient_wrt_out_l_input)
-            gradient_v0 = np.sum(gradient_wrt_out_l_input, axis=0, keepdims=True)
+            gradient_in = self.loss_func.gradient(y, y_pred_val) * self.output_activation.gradient(res_output)
+            gradient_v = output_val.T.dot(gradient_in)
+            gradient_v0 = np.sum(gradient_in, axis=0, keepdims=True)
 
             # Layers - Hidden 
-            gradient_wrt_hidden_l_input = gradient_wrt_out_l_input.dot(self.V.T) * self.activation_func.gradient(input_val)
-            gradient_w = X.T.dot(gradient_wrt_hidden_l_input)
-            gradient_w0 = np.sum(gradient_wrt_hidden_l_input, axis=0, keepdims=True)
+            gradient_hid = gradient_in.dot(self.V.T) * self.activation_func.gradient(input_val)
+            gradient_w = X.T.dot(gradient_hid)
+            gradient_w0 = np.sum(gradient_hid, axis=0, keepdims=True)
 
             # Update weights - w0, W, v0, V
-            self.V  -= self.learningRate * gradient_v
             self.v0 -= self.learningRate * gradient_v0
-            self.W  -= self.learningRate * gradient_w
+            self.V  -= self.learningRate * gradient_v
             self.w0 -= self.learningRate * gradient_w0
+            self.W  -= self.learningRate * gradient_w
     
-    # Make predictions based on model
+    # Make predictions on model
     def predict(self, X): 
         input_val = X.dot(self.W) + self.w0
         output_val = self.activation_func(input_val)
-        output_layer_input = output_val.dot(self.V) + self.v0
-        y_pred_val = self.output_activation(output_layer_input)
+        res_output = output_val.dot(self.V) + self.v0
+        y_pred_val = self.output_activation(res_output)
         return y_pred_val
     
-    def classify(self, X):
+    def classify(self, X): #Classification function
         y_pred_val = self.predict(X)
         
         return y_pred_val.idxmax(), y_pred_val.max()
 
-    # Weights values
+    # Weights values into a text file
     def dumpWeights(self):
         np.savetxt('w0.txt',self.w0,fmt='%.2f')
         np.savetxt('v0.txt',self.v0,fmt='%.2f')
@@ -105,23 +108,26 @@ def main():
     print(f"Shape of val set is {X_val.shape}")
     print(f"Shape of val labels is {y_val.shape}")
 
-    # Classfier - MLP
-    clf = MLP(hidden_layer=256, iterations=300, learningRate=0.00001)
+    # Multi-layer Perceptron Classfier 
+    classfy = MLP(hidden_layer=256, iterations=300, learningRate=0.00001)
 
     start = time.time()
 
-    clf.fit(X_train, y_train)
+    classfy.fit(X_train, y_train)
 
     end = time.time()
-    print(end - start, 's')
+    print("Total Time:", end - start, 's')
 
-    y_pred_val = np.argmax(clf.predict(X_test), axis=1)
+    # Testing
+    y_pred_val = np.argmax(classfy.predict(X_test), axis=1)
     y_test = np.argmax(y_test, axis=1)
 
-    y_val_pred = np.argmax(clf.predict(X_val), axis=1)
+    # Validation
+    y_val_pred = np.argmax(classfy.predict(X_val), axis=1)
     y_val = np.argmax(y_val, axis=1)
 
-    y_tr_pred = np.argmax(clf.predict(X_train), axis=1)
+    # Training
+    y_tr_pred = np.argmax(classfy.predict(X_train), axis=1)
     y_train = np.argmax(y_train, axis=1)
 
     accuracy_test = accuracy(y_test, y_pred_val)
@@ -133,7 +139,7 @@ def main():
     print ("Validation Accuracy:", val_accuracy)
 
     # View weights value
-    clf.dumpWeights()
+    classfy.dumpWeights()
 
     # Creates confusion matrix and display result
     p = confusion_matrix(y_test, y_pred_val)
@@ -147,7 +153,6 @@ def main():
 
     # confusion matrix plot
     cm_display = ConfusionMatrixDisplay(c).plot()
-    cm_display.plot()
     plt.show()
     
 

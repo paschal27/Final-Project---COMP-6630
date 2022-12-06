@@ -21,13 +21,13 @@ class ReLU():
 
 #Loss 
 class LossFunc(object):
-    def loss(self, y_true, y_pred):
+    def loss(self, y_true, y_pred): #Implemented into CrossEntropy
         return NotImplementedError()
 
-    def gradient(self, y, y_pred):
-        raise NotImplementedError()
+    def gradient(self, y, y_pred): #gradient - how fast and well is model learning
+        raise NotImplementedError() 
 
-    def acc(self, y, y_pred):
+    def acc(self, y, y_pred): #accuracy
         return 0
 
 #Cross Entropy
