@@ -3,15 +3,15 @@
 ## Step-by-step procedure
 Implementation can be executed on any python IDE like VsCode or Pycharm.
 
-Download code from provided github link, and load it into any IDE of your choice.
+Download python codes "MLPimpl.py" and "func.py" from provided github link, and load it into any IDE of your choice.
 
-All files including the dataset must be located in the same folder.
+All files including codes and dataset must be stored in the same folder.
 
-Path name must be set to the name of the dataset in order to aviod any errors.
+variable "path_loc" must be set to the name of the dataset in order to aviod any errors.
 
 Click on run, and the required acurracy output should be shown in the terminal.
 
-Also, a confusion matrix plot and a classification report file will be generated.
+Also, a confusion matrix plot and a classification report will be generated.
 
 
 ## Dataset Usage
